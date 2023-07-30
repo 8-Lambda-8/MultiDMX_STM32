@@ -119,7 +119,7 @@ void MultiDmxClass::usePins(PinName pins[DMX_UNIVERSES]) {
 
   if (restartRequired) dmxEnd();
   for (uint8_t u = 0; u < DMX_UNIVERSES; u++) {
-    dmxPins[u] = pins[u];
+    dmxPinNames[u] = pins[u];
 
     dmxPorts[u] = get_GPIO_Port(STM_PORT(pins[u]));
     dmxPins[u] = STM_LL_GPIO_PIN(pins[u]);
