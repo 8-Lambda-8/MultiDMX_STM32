@@ -26,7 +26,7 @@ STM32Timer ITimer(TIM2);
 void TimerHandler();
 
 void TIMER_INTERRUPT_ENABLE() {
-  ITimer.attachInterruptInterval(90, TimerHandler)
+  ITimer.attachInterruptInterval(90, TimerHandler);
 }
 
 void TIMER_INTERRUPT_DISABLE() {
