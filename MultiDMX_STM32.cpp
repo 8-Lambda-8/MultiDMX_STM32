@@ -4,7 +4,8 @@
 
 static volatile uint8_t dmxBuffer[DMX_UNIVERSES][DMX_SIZE];
 static uint8_t dmxStarted = 0;
-static uint16_t dmxState = 0;
+
+static uint32_t begin, target;
 
 static uint8_t dmxBit[DMX_UNIVERSES] = {0};
 static PinName dmxPinNames[DMX_UNIVERSES] = {PA_0, PA_1};
@@ -65,9 +66,21 @@ void resetAllPins() {
   }
 }
 
+#define cyclesPerUs(us) ((F_CPU / 1000000) * us)
+void waitTilTargetCycle() {
+  while (DWT->CYCCNT - begin < target)
+    ;
+}
+
+
 void TimerHandler() {
   TIMER_INTERRUPT_DISABLE();
 
+  begin = DWT->CYCCNT;
+  target = 0;
+  target += cyclesPerUs(9);
+  setAllPins();  // MAB
+  waitTilTargetCycle();
   TIMER_INTERRUPT_ENABLE();
 }
 
