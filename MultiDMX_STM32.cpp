@@ -95,6 +95,7 @@ void TimerHandler() {
   setAllPins();  // Stop Bits
   waitTilTargetCycle();
 
+  resetAllPins();
   TIMER_INTERRUPT_ENABLE();
 }
 
