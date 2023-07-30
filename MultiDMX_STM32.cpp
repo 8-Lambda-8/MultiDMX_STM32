@@ -7,7 +7,13 @@ static uint8_t dmxStarted = 0;
 static uint16_t dmxState = 0;
 
 static uint8_t dmxBit[DMX_UNIVERSES] = {0};
-static PinName dmxPins[DMX_UNIVERSES] = {PA_0, PA_1};
+static PinName dmxPinNames[DMX_UNIVERSES] = {PA_0, PA_1};
+
+#define get_GPIO_Port(p) ((p < MAX_NB_PORT) ? GPIOPort[p] : (GPIO_TypeDef *)NULL)
+#define STM_PORT(X) (((uint32_t)(X) >> 4) & 0xF)
+#define STM_PIN(X) ((uint32_t)(X)&0xF)
+static GPIO_TypeDef *dmxPorts[DMX_UNIVERSES];
+static uint32_t dmxPins[DMX_UNIVERSES];
 
 void dmxBegin();
 void dmxEnd();
@@ -47,6 +53,18 @@ void dmxEnd() {
   dmxStarted = 0;
   TIMER_INTERRUPT_DISABLE();
 }
+
+void setAllPins() {
+  for (uint8_t i = 0; i < DMX_UNIVERSES; i++) {
+    LL_GPIO_SetOutputPin(dmxPorts[i], dmxPins[i]);
+  }
+}
+void resetAllPins() {
+  for (uint8_t i = 0; i < DMX_UNIVERSES; i++) {
+    LL_GPIO_ResetOutputPin(dmxPorts[i], dmxPins[i]);
+  }
+}
+
 void TimerHandler() {
   TIMER_INTERRUPT_DISABLE();
 
@@ -73,7 +91,12 @@ void MultiDmxClass::usePins(PinName pins[DMX_UNIVERSES]) {
   bool restartRequired = dmxStarted;
 
   if (restartRequired) dmxEnd();
-  for (uint8_t u = 0; u < DMX_UNIVERSES; u++) dmxPins[u] = pins[u];
+  for (uint8_t u = 0; u < DMX_UNIVERSES; u++) {
+    dmxPins[u] = pins[u];
+
+    dmxPorts[u] = get_GPIO_Port(STM_PORT(pins[u]));
+    dmxPins[u] = STM_LL_GPIO_PIN(pins[u]);
+  };
   if (restartRequired) dmxBegin();
 }
 
