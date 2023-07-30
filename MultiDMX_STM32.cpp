@@ -81,6 +81,20 @@ void TimerHandler() {
   target += cyclesPerUs(9);
   setAllPins();  // MAB
   waitTilTargetCycle();
+
+  target += cyclesPerUs(4);
+  resetAllPins();  // Start Bit
+  waitTilTargetCycle();
+
+  // Start Byte 0
+  target += cyclesPerUs(4 * 8);
+  resetAllPins();
+  waitTilTargetCycle();
+
+  target += cyclesPerUs(8);
+  setAllPins();  // Stop Bits
+  waitTilTargetCycle();
+
   TIMER_INTERRUPT_ENABLE();
 }
 
