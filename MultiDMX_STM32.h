@@ -12,7 +12,7 @@
 class MultiDmxClass {
  public:
   void write(uint8_t universe, uint16_t channel, uint8_t value);
-  void usePins(uint8_t pins[DMX_UNIVERSES]);
+  void usePins(PinName pins[DMX_UNIVERSES]);
 };
 extern MultiDmxClass MultiDmx;
 
