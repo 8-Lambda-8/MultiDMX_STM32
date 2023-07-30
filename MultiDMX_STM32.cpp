@@ -37,11 +37,10 @@ void TIMER_INTERRUPT_DISABLE() {
  */
 void dmxBegin() {
   dmxStarted = 1;
-  for (size_t i = 0; i < DMX_UNIVERSES; i++) {
-    // Set DMX pin to output
-    for (uint8_t i = 0; i < DMX_UNIVERSES; i++) {
-      pinMode(dmxPins[i], OUTPUT);
-    }
+
+  // Set DMX pin to output
+  for (uint8_t i = 0; i < DMX_UNIVERSES; i++) {
+    pinMode(pinNametoDigitalPin(dmxPinNames[i]), OUTPUT);
   }
 
   TIMER_INTERRUPT_ENABLE();
